@@ -9,7 +9,8 @@ A full-featured browser workspace for practicing Governance, Risk and Compliance
 - Add, edit, delete, search and filter support across core modules
 - Risk matrix, control lifecycle, control mapping, Statement of Applicability and traceability views
 - Generated framework library with ISO 27001, NIST CSF, CIS, SOC 2, PCI DSS, SOX ITGC and GDPR practice controls
-- Local GRC advisor, interview prep, guided missions and portfolio builder
+- Practice scenarios, ISO 27001 Lead Implementer lab, WebGPU setup checklist, community roadmap, local GRC advisor, interview prep, guided missions and portfolio builder
+- Beginner mode and developer data-model mode
 - JSON import/export, CSV risk export and Markdown executive report
 
 Data is stored in the browser's local storage for this static practice lab. Use Export JSON to back up or move a workspace.

@@ -2,7 +2,7 @@ import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 
 export default defineConfig({
-  root: "pages",
+  root: "static-pages",
   base: "/grc-practice-lab/",
   plugins: [react()],
   build: {

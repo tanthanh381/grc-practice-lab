@@ -140,6 +140,8 @@ type NavItem = {
 
 const STORAGE_KEY = "grc-practice-lab:v1";
 const PROFILE_KEY = "grc-practice-lab:profile:v1";
+const BEGINNER_MODE_KEY = "grc-practice-lab:beginner-mode:v1";
+const DEV_MODE_KEY = "grc-practice-lab:dev-mode:v1";
 
 const statusOptions = ["Draft", "Active", "In Progress", "Approved", "Implemented", "Testing", "Open", "Closed"].map(
   (value) => ({ label: value, value }),
@@ -1103,11 +1105,14 @@ const navGroups: Array<{ title: string; items: NavItem[] }> = [
     items: [
       { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
       { id: "start", label: "Start Here", icon: Home },
+      { id: "scenarios", label: "Practice Scenarios", icon: PlayCircle },
       { id: "missions", label: "Guided Missions", icon: Flag },
+      { id: "iso27001", label: "ISO 27001 Lead Implementer", icon: Shield },
       { id: "frameworks", label: "Frameworks", icon: BookOpen, badge: () => "566" },
       { id: "glossary", label: "GRC Glossary", icon: GraduationCap },
       { id: "interview", label: "Interview Prep", icon: MessageSquareText },
       { id: "ai", label: "AI Command", icon: Sparkles },
+      { id: "aiSetup", label: "WebGPU Setup", icon: SlidersHorizontal },
       { id: "portfolio", label: "Portfolio Builder", icon: UserRoundCheck },
     ],
   },
@@ -1131,6 +1136,7 @@ const navGroups: Array<{ title: string; items: NavItem[] }> = [
       { id: "treatments", label: "Treatments", icon: LifeBuoy, badge: (d) => d.treatments.length },
       { id: "matrix", label: "Risk Matrix", icon: Grid3X3 },
       { id: "mapping", label: "Control Mapping", icon: GitBranch },
+      { id: "crosswalk", label: "Control Crosswalk", icon: GitBranch },
       { id: "lifecycle", label: "Control Lifecycle", icon: RefreshCw },
       { id: "cloudRisks", label: "Cloud Risks", icon: Cloud, badge: (d) => d.cloudRisks.length },
     ],
@@ -1158,6 +1164,7 @@ const navGroups: Array<{ title: string; items: NavItem[] }> = [
       { id: "exceptions", label: "Exceptions", icon: ShieldAlert, badge: (d) => d.exceptions.length },
       { id: "issues", label: "Issues", icon: ShieldQuestion, badge: (d) => d.issues.length },
       { id: "tasks", label: "Tasks", icon: CheckCircle2, badge: (d) => d.tasks.length },
+      { id: "reviews", label: "Due & Activity", icon: CalendarDays },
       { id: "calendar", label: "Compliance Calendar", icon: CalendarDays },
     ],
   },
@@ -1167,6 +1174,7 @@ const navGroups: Array<{ title: string; items: NavItem[] }> = [
       { id: "traceability", label: "Traceability", icon: Link2 },
       { id: "reports", label: "Reports", icon: BarChart3 },
       { id: "projects", label: "Projects", icon: BriefcaseBusiness },
+      { id: "roadmap", label: "Community Roadmap", icon: Flag },
     ],
   },
 ];
@@ -1208,6 +1216,106 @@ const interviewQuestions = [
   "What makes evidence weak even when it exists?",
   "How do KRIs connect to board-approved appetite?",
   "How would you prepare for a SOC 2 readiness audit?",
+];
+
+const practiceScenarios = [
+  {
+    id: "scenario-phishing",
+    title: "Privileged account phishing",
+    domain: "Identity and access",
+    difficulty: "Beginner",
+    brief: "A finance admin reports a suspicious login prompt after clicking a vendor invoice.",
+    creates: ["risk", "control", "evidence", "task"],
+    risk: "Phishing compromises privileged finance access causing unauthorized payment changes",
+    control: "Phishing-resistant MFA enforced for privileged finance roles",
+  },
+  {
+    id: "scenario-vendor",
+    title: "Critical vendor assurance gap",
+    domain: "Third party",
+    difficulty: "Intermediate",
+    brief: "A critical hosting provider cannot provide its current SOC 2 bridge letter before renewal.",
+    creates: ["vendor assessment", "finding", "task"],
+    risk: "Missing vendor assurance hides control failures affecting hosted customer data",
+    control: "Vendor assurance review requires current SOC 2 report and bridge letter",
+  },
+  {
+    id: "scenario-cloud",
+    title: "Cloud IAM drift",
+    domain: "Cloud security",
+    difficulty: "Intermediate",
+    brief: "A weekly cloud review finds stale admin roles and no documented exception.",
+    creates: ["cloud risk", "ITGC", "test", "finding"],
+    risk: "Over-permissive cloud IAM roles enable unauthorized production changes",
+    control: "Cloud IAM access review validates privileged roles weekly",
+  },
+  {
+    id: "scenario-audit",
+    title: "SOC 2 readiness audit",
+    domain: "Audit",
+    difficulty: "Advanced",
+    brief: "The audit committee asks for a readiness view before external fieldwork starts.",
+    creates: ["audit", "test plan", "report"],
+    risk: "Untested controls reduce confidence in SOC 2 readiness",
+    control: "Readiness audit samples control evidence before external fieldwork",
+  },
+];
+
+const isoLeadModules = [
+  ["Context and scope", "Define ISMS scope, interested parties and business context."],
+  ["Leadership and policy", "Create policy, roles, objectives and governance rhythm."],
+  ["Risk assessment", "Build criteria, identify risks and approve treatment plans."],
+  ["Statement of Applicability", "Justify Annex A inclusion, exclusion and implementation status."],
+  ["Operational controls", "Run awareness, supplier, incident and change control workflows."],
+  ["Performance evaluation", "Plan internal audit, management review and metrics."],
+  ["Improvement", "Track nonconformities, corrective actions and continual improvement."],
+];
+
+const roadmapItems = [
+  ["Complete", "Static GitHub Pages deployment and local JSON persistence"],
+  ["Complete", "Risk, control, evidence, audit and report workbench"],
+  ["Complete", "Practice scenarios, ISO 27001 lab and WebGPU setup guide"],
+  ["Next", "Optional multi-user persistence with hosted database"],
+  ["Next", "Real file attachments for evidence packages"],
+  ["Later", "Role-based learning paths and richer scenario scoring"],
+];
+
+const crosswalkRows = [
+  {
+    domain: "Identity and access",
+    iso: "A.5.15, A.5.16, A.5.17",
+    nist: "PR.AA, GV.RR",
+    soc2: "CC6.1, CC6.2, CC6.3",
+    cis: "5, 6",
+  },
+  {
+    domain: "Vendor management",
+    iso: "A.5.19, A.5.20, A.5.21",
+    nist: "GV.SC",
+    soc2: "CC9.2",
+    cis: "15",
+  },
+  {
+    domain: "Logging and monitoring",
+    iso: "A.8.15, A.8.16",
+    nist: "DE.CM, RS.AN",
+    soc2: "CC7.2, CC7.3",
+    cis: "8",
+  },
+  {
+    domain: "Business continuity",
+    iso: "A.5.29, A.5.30",
+    nist: "RC.RP, RC.CO",
+    soc2: "A1.2, A1.3",
+    cis: "11, 17",
+  },
+  {
+    domain: "Change management",
+    iso: "A.8.32",
+    nist: "PR.PS, GV.PO",
+    soc2: "CC8.1",
+    cis: "4, 7",
+  },
 ];
 
 function nextId(prefix: string, items: GrcRecord[]) {
@@ -1386,6 +1494,8 @@ function GrcWorkspace() {
   const [frameworkFilter, setFrameworkFilter] = useState("All");
   const [coachPrompt, setCoachPrompt] = useState("What should I fix first before an audit?");
   const [coachAnswer, setCoachAnswer] = useState("");
+  const [beginnerMode, setBeginnerMode] = useState(false);
+  const [devMode, setDevMode] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -1405,6 +1515,8 @@ function GrcWorkspace() {
         setProfile({ name: "GRC Analyst", email: "analyst@example.com", linkedin: "", targetRole: "GRC Analyst" });
       }
     }
+    setBeginnerMode(window.localStorage.getItem(BEGINNER_MODE_KEY) === "true");
+    setDevMode(window.localStorage.getItem(DEV_MODE_KEY) === "true");
     setHydrated(true);
   }, []);
 
@@ -1415,6 +1527,14 @@ function GrcWorkspace() {
   useEffect(() => {
     if (hydrated) window.localStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
   }, [profile, hydrated]);
+
+  useEffect(() => {
+    if (hydrated) window.localStorage.setItem(BEGINNER_MODE_KEY, String(beginnerMode));
+  }, [beginnerMode, hydrated]);
+
+  useEffect(() => {
+    if (hydrated) window.localStorage.setItem(DEV_MODE_KEY, String(devMode));
+  }, [devMode, hydrated]);
 
   const metrics = useMemo(() => buildMetrics(data), [data]);
   const activeConfig = configByKey[activeTab as DataKey];
@@ -1541,6 +1661,112 @@ function GrcWorkspace() {
     setActiveTab("controls");
   };
 
+  const launchScenario = (scenario: (typeof practiceScenarios)[number]) => {
+    const now = new Date().toISOString().slice(0, 10);
+    const dueDate = new Date(Date.now() + 21 * 86400000).toISOString().slice(0, 10);
+    const riskId = nextId("RSK", data.risks);
+    const controlId = nextId("CTL", data.controls);
+    const risk: GrcRecord = {
+      id: riskId,
+      title: scenario.risk,
+      owner: scenario.domain === "Third party" ? "Procurement" : "Security",
+      category: scenario.domain === "Third party" ? "Third Party" : scenario.domain === "Cloud security" ? "Cyber" : "Operational",
+      likelihood: scenario.difficulty === "Advanced" ? 4 : 3,
+      impact: scenario.difficulty === "Beginner" ? 4 : 5,
+      treatment: "Mitigate",
+      status: "Open",
+    };
+    const control: GrcRecord = {
+      id: controlId,
+      title: scenario.control,
+      owner: risk.owner,
+      riskId,
+      framework: scenario.domain === "Third party" ? "ISO 27001 A.5.19 / SOC 2 CC9.2" : "ISO 27001 A.5.15 / SOC 2 CC6.3",
+      frequency: scenario.domain === "Audit" ? "Quarterly" : "Continuous",
+      type: "Preventive",
+      status: "Draft",
+    };
+    const task: GrcRecord = {
+      id: nextId("TSK", data.tasks),
+      title: `Complete scenario evidence pack: ${scenario.title}`,
+      owner: String(risk.owner),
+      priority: scenario.difficulty === "Advanced" ? "Critical" : "High",
+      status: "Open",
+      dueDate,
+    };
+    const evidence: GrcRecord = {
+      id: nextId("EVD", data.evidence),
+      title: `${scenario.title} initial evidence request`,
+      controlId,
+      owner: String(risk.owner),
+      type: "Attestation",
+      quality: "Medium",
+      status: "Collected",
+      collectedAt: now,
+    };
+    setData((current) => ({
+      ...current,
+      risks: [risk, ...current.risks],
+      controls: [control, ...current.controls],
+      evidence: [evidence, ...current.evidence],
+      tasks: [task, ...current.tasks],
+      activity: [
+        {
+          id: `ACT-${Date.now()}`,
+          message: `Launched practice scenario: ${scenario.title}`,
+          at: now,
+          type: "scenario",
+        },
+        ...current.activity,
+      ].slice(0, 40),
+    }));
+    setActiveTab("traceability");
+  };
+
+  const generateIsoStarter = () => {
+    const now = new Date().toISOString().slice(0, 10);
+    const policy: GrcRecord = {
+      id: nextId("POL", data.policies),
+      title: "ISO 27001 ISMS Policy",
+      owner: "GRC Lead",
+      status: "Draft",
+      version: "0.1",
+      scope: "CloudPay-style fintech services, production systems and supporting operations",
+      reviewDate: new Date(Date.now() + 60 * 86400000).toISOString().slice(0, 10),
+    };
+    const requirements = isoLeadModules.slice(0, 5).map(([title], index) => ({
+      id: nextId("REQ", [...data.requirements, ...Array.from({ length: index }, (_, i) => ({ id: `tmp-${i}` }))]),
+      title: `ISO 27001 ${title}`,
+      owner: "GRC Lead",
+      framework: "ISO 27001:2022",
+      status: "Mapped",
+    }));
+    const audit: GrcRecord = {
+      id: nextId("AUD", data.audits),
+      title: "ISO 27001 implementation readiness review",
+      owner: "GRC Lead",
+      scope: "Clauses 4-10, Annex A applicability and treatment evidence",
+      status: "Planning",
+      dueDate: new Date(Date.now() + 45 * 86400000).toISOString().slice(0, 10),
+    };
+    setData((current) => ({
+      ...current,
+      policies: [policy, ...current.policies],
+      requirements: [...requirements, ...current.requirements],
+      audits: [audit, ...current.audits],
+      activity: [
+        {
+          id: `ACT-${Date.now()}`,
+          message: "Generated ISO 27001 Lead Implementer starter pack",
+          at: now,
+          type: "iso27001",
+        },
+        ...current.activity,
+      ].slice(0, 40),
+    }));
+    setActiveTab("iso27001");
+  };
+
   const renderContent = () => {
     if (activeConfig) return <EntityView config={activeConfig} data={data} query={query} filter={filter} onEdit={openForm} onDelete={deleteRecord} />;
     switch (activeTab) {
@@ -1548,8 +1774,12 @@ function GrcWorkspace() {
         return <Dashboard data={data} metrics={metrics} go={setActiveTab} />;
       case "start":
         return <StartHere data={data} go={setActiveTab} loadSamples={loadSamples} />;
+      case "scenarios":
+        return <PracticeScenarios data={data} onLaunch={launchScenario} />;
       case "missions":
         return <Missions data={data} go={setActiveTab} />;
+      case "iso27001":
+        return <Iso27001Lab data={data} onGenerate={generateIsoStarter} go={setActiveTab} />;
       case "frameworks":
         return (
           <Frameworks
@@ -1566,12 +1796,16 @@ function GrcWorkspace() {
         return <InterviewPrep data={data} />;
       case "ai":
         return <AiCommand data={data} prompt={coachPrompt} setPrompt={setCoachPrompt} answer={coachAnswer} setAnswer={setCoachAnswer} />;
+      case "aiSetup":
+        return <AiAgentSetup />;
       case "portfolio":
         return <Portfolio data={data} profile={profile} setProfile={setProfile} exportReport={exportReport} />;
       case "matrix":
         return <RiskMatrix data={data} />;
       case "mapping":
         return <ControlMapping data={data} />;
+      case "crosswalk":
+        return <ControlCrosswalk data={data} />;
       case "lifecycle":
         return <ControlLifecycle data={data} />;
       case "evidenceScore":
@@ -1582,12 +1816,16 @@ function GrcWorkspace() {
         return <AuditSimulator data={data} setData={setData} />;
       case "calendar":
         return <ComplianceCalendar data={data} />;
+      case "reviews":
+        return <DueAndActivity data={data} />;
       case "traceability":
         return <Traceability data={data} />;
       case "reports":
         return <Reports data={data} profile={profile} exportJson={exportJson} exportReport={exportReport} />;
       case "projects":
         return <Projects data={data} go={setActiveTab} />;
+      case "roadmap":
+        return <CommunityRoadmap />;
       default:
         return <Dashboard data={data} metrics={metrics} go={setActiveTab} />;
     }
@@ -1677,6 +1915,14 @@ function GrcWorkspace() {
             <FileText size={15} />
             Markdown report
           </button>
+          <button className={beginnerMode ? "chip active" : "chip"} onClick={() => setBeginnerMode((value) => !value)}>
+            <GraduationCap size={15} />
+            Beginner mode
+          </button>
+          <button className={devMode ? "chip active" : "chip"} onClick={() => setDevMode((value) => !value)}>
+            <FileJson size={15} />
+            Dev mode
+          </button>
           <label className="filter-select">
             <Filter size={15} />
             <select value={filter} onChange={(event) => setFilter(event.target.value)}>
@@ -1687,6 +1933,9 @@ function GrcWorkspace() {
             </select>
           </label>
         </div>
+
+        {beginnerMode ? <BeginnerPanel tab={activeTab} data={data} go={setActiveTab} /> : null}
+        {devMode ? <DevPanel tab={activeTab} data={data} /> : null}
 
         {renderContent()}
       </section>
@@ -2010,6 +2259,272 @@ function getFieldOptions(field: FieldConfig, data: GrcData) {
     return data[field.relation].map((item) => ({ label: `${item.id} - ${getDisplayName(item)}`, value: item.id }));
   }
   return field.options || [];
+}
+
+function BeginnerPanel({ tab, data, go }: { tab: string; data: GrcData; go: (tab: string) => void }) {
+  const tip = beginnerTip(tab, data);
+  return (
+    <section className="learning-panel">
+      <div>
+        <span className="eyebrow">Beginner mode</span>
+        <h2>{tip.title}</h2>
+        <p>{tip.why}</p>
+      </div>
+      <ol>
+        {tip.steps.map((step) => (
+          <li key={step}>{step}</li>
+        ))}
+      </ol>
+      <button className="ghost-button" onClick={() => go(tip.nextTab)}>
+        {tip.nextLabel} <ArrowRight size={16} />
+      </button>
+    </section>
+  );
+}
+
+function DevPanel({ tab, data }: { tab: string; data: GrcData }) {
+  const activeKey = tab in configByKey ? (tab as DataKey) : null;
+  const payload = activeKey ? data[activeKey].slice(0, 3) : buildMetrics(data);
+  return (
+    <section className="dev-panel">
+      <div>
+        <span className="eyebrow">Dev mode</span>
+        <h2>Live data model</h2>
+        <p>{activeKey ? `Showing first records from ${activeKey}.` : "Showing derived dashboard metrics."}</p>
+      </div>
+      <pre>{JSON.stringify(payload, null, 2)}</pre>
+    </section>
+  );
+}
+
+function PracticeScenarios({ data, onLaunch }: { data: GrcData; onLaunch: (scenario: (typeof practiceScenarios)[number]) => void }) {
+  return (
+    <section className="scenario-grid">
+      {practiceScenarios.map((scenario) => (
+        <article key={scenario.id} className="scenario-card">
+          <div className="scenario-card-head">
+            <Badge value={scenario.difficulty} />
+            <Badge value={scenario.domain} />
+          </div>
+          <h3>{scenario.title}</h3>
+          <p>{scenario.brief}</p>
+          <div className="scenario-artifacts">
+            {scenario.creates.map((item) => (
+              <span key={item}>{item}</span>
+            ))}
+          </div>
+          <button className="primary-button" onClick={() => onLaunch(scenario)}>
+            <PlayCircle size={17} />
+            Launch scenario
+          </button>
+        </article>
+      ))}
+      <article className="panel scenario-summary">
+        <h2>Scenario workspace status</h2>
+        <p>Scenarios generate traceable artifacts into your registers so the lab behaves like a real GRC workspace.</p>
+        <div className="artifact-grid">
+          <div><strong>{data.risks.length}</strong><span>Risks</span></div>
+          <div><strong>{data.controls.length}</strong><span>Controls</span></div>
+          <div><strong>{data.evidence.length}</strong><span>Evidence</span></div>
+          <div><strong>{data.tasks.length}</strong><span>Tasks</span></div>
+        </div>
+      </article>
+    </section>
+  );
+}
+
+function Iso27001Lab({ data, onGenerate, go }: { data: GrcData; onGenerate: () => void; go: (tab: string) => void }) {
+  const mappedIso = data.requirements.filter((item) => String(item.framework || "").includes("ISO")).length;
+  const readiness = Math.min(100, Math.round(((mappedIso + data.policies.length + data.audits.length + data.controls.length) / 18) * 100));
+  return (
+    <section className="iso-layout">
+      <article className="panel">
+        <div className="panel-heading">
+          <div>
+            <h2>ISO 27001 Lead Implementer lab</h2>
+            <p>Build a portfolio-ready ISMS starter: scope, policy, risk treatment, SoA, audit and improvement loop.</p>
+          </div>
+          <div className="progress-ring small">
+            <strong>{readiness}%</strong>
+            <span>ready</span>
+          </div>
+        </div>
+        <div className="iso-module-list">
+          {isoLeadModules.map(([title, detail], index) => {
+            const done =
+              (index === 0 && data.policies.length > 0) ||
+              (index === 2 && data.risks.length > 0) ||
+              (index === 3 && data.controls.length > 0) ||
+              (index === 5 && data.audits.length > 0) ||
+              mappedIso > index;
+            return (
+              <div key={title} className={done ? "done" : ""}>
+                <em>{index + 1}</em>
+                <span>
+                  <strong>{title}</strong>
+                  <small>{detail}</small>
+                </span>
+                {done ? <Check size={18} /> : <ArrowRight size={18} />}
+              </div>
+            );
+          })}
+        </div>
+        <div className="inline-actions">
+          <button className="primary-button" onClick={onGenerate}>
+            <Wand2 size={17} />
+            Generate ISMS starter
+          </button>
+          <button className="ghost-button" onClick={() => go("soa")}>
+            Open SoA <ArrowRight size={16} />
+          </button>
+        </div>
+      </article>
+      <article className="panel">
+        <h2>Implementation artifacts</h2>
+        <div className="artifact-grid two">
+          <div><strong>{data.policies.length}</strong><span>Policies</span></div>
+          <div><strong>{mappedIso}</strong><span>ISO requirements</span></div>
+          <div><strong>{data.controls.length}</strong><span>Controls</span></div>
+          <div><strong>{data.audits.length}</strong><span>Audits</span></div>
+        </div>
+        <h3>Certificate readiness</h3>
+        <ul className="proof-list">
+          <li>Define ISMS scope and policy owner.</li>
+          <li>Map risks to controls and treatment actions.</li>
+          <li>Generate SoA and audit plan before exporting reports.</li>
+        </ul>
+      </article>
+    </section>
+  );
+}
+
+function AiAgentSetup() {
+  const checks = [
+    ["Browser support", "Use a recent Chromium-based browser for WebGPU experiments."],
+    ["Local-only data", "This lab advisor runs rule-based analysis in the browser by default."],
+    ["Model slot", "Reserve an optional model connection for future local LLM integration."],
+    ["Prompt library", "Use audit readiness, appetite gaps and evidence quality prompts."],
+  ];
+  return (
+    <section className="panel setup-panel">
+      <div className="panel-heading">
+        <div>
+          <h2>WebGPU agent setup</h2>
+          <p>Compatibility checklist for adding a local browser AI helper without uploading GRC data.</p>
+        </div>
+      </div>
+      <div className="setup-list">
+        {checks.map(([title, detail]) => (
+          <div key={title}>
+            <CheckCircle2 size={18} />
+            <span>
+              <strong>{title}</strong>
+              <small>{detail}</small>
+            </span>
+          </div>
+        ))}
+      </div>
+      <pre className="coach-output">{`agent:
+  mode: browser-local
+  data_access: localStorage export only
+  suggested_prompts:
+    - "Find controls without evidence"
+    - "Create audit fieldwork plan"
+    - "Summarize risks over appetite"`}</pre>
+    </section>
+  );
+}
+
+function ControlCrosswalk({ data }: { data: GrcData }) {
+  return (
+    <section className="panel">
+      <div className="panel-heading">
+        <div>
+          <h2>Control crosswalk</h2>
+          <p>Map one control domain across common frameworks and compare current catalog coverage.</p>
+        </div>
+      </div>
+      <div className="data-table-wrap">
+        <table className="data-table">
+          <thead>
+            <tr>
+              <th>Domain</th>
+              <th>ISO 27001</th>
+              <th>NIST CSF</th>
+              <th>SOC 2</th>
+              <th>CIS</th>
+              <th>Lab coverage</th>
+            </tr>
+          </thead>
+          <tbody>
+            {crosswalkRows.map((row) => {
+              const coverage = data.controls.filter((control) => String(control.title || control.framework || "").toLowerCase().includes(row.domain.split(" ")[0].toLowerCase())).length;
+              return (
+                <tr key={row.domain}>
+                  <td>{row.domain}</td>
+                  <td>{row.iso}</td>
+                  <td>{row.nist}</td>
+                  <td>{row.soc2}</td>
+                  <td>{row.cis}</td>
+                  <td><Badge value={coverage ? `${coverage} controls` : "Gap"} /></td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  );
+}
+
+function DueAndActivity({ data }: { data: GrcData }) {
+  const due = dueItems(data);
+  return (
+    <section className="main-two-col">
+      <article className="panel">
+        <div className="panel-heading">
+          <div>
+            <h2>Due queue</h2>
+            <p>Prioritized work from reviews, tasks, treatments, findings and audits.</p>
+          </div>
+        </div>
+        <Timeline items={due} />
+      </article>
+      <article className="panel">
+        <div className="panel-heading">
+          <div>
+            <h2>Activity log</h2>
+            <p>Latest changes and generated lab artifacts.</p>
+          </div>
+        </div>
+        <div className="activity-list">
+          {data.activity.map((item) => (
+            <div key={item.id} className="activity-row">
+              <span />
+              <div>
+                <strong>{item.message}</strong>
+                <small>{item.at} / {item.type}</small>
+              </div>
+            </div>
+          ))}
+        </div>
+      </article>
+    </section>
+  );
+}
+
+function CommunityRoadmap() {
+  return (
+    <section className="roadmap-grid">
+      {roadmapItems.map(([status, title], index) => (
+        <article key={title} className="roadmap-card">
+          <Badge value={status} />
+          <h3>{title}</h3>
+          <p>Roadmap item #{index + 1} keeps the lab transparent and extensible.</p>
+        </article>
+      ))}
+    </section>
+  );
 }
 
 function StartHere({ data, go, loadSamples }: { data: GrcData; go: (tab: string) => void; loadSamples: () => void }) {
@@ -2648,6 +3163,61 @@ function dueItems(data: GrcData) {
   push(data.vendors, "Vendor review", "vendors", "reviewDate");
   push(data.bcm, "BCM test", "bcm", "testDate");
   return rows.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+}
+
+function beginnerTip(tab: string, data: GrcData) {
+  const defaults = {
+    title: "Work from risk to proof",
+    why: "A practical GRC workflow links business context, risk decisions, controls, evidence and testing.",
+    steps: ["Start from the dashboard gaps.", "Open the linked module.", "Create one complete traceability chain before adding volume."],
+    nextTab: "traceability",
+    nextLabel: "Review traceability",
+  };
+  const tips: Record<string, typeof defaults> = {
+    dashboard: {
+      title: "Read the command center first",
+      why: `You currently have ${data.risks.length} risks, ${data.controls.length} controls and ${data.evidence.length} evidence items.`,
+      steps: ["Check critical risks.", "Check controls without evidence.", "Open due work before adding new records."],
+      nextTab: "reviews",
+      nextLabel: "Open due queue",
+    },
+    scenarios: {
+      title: "Learn by generating artifacts",
+      why: "A scenario should create real records so you can practice remediation and reporting.",
+      steps: ["Pick a scenario by domain.", "Launch it into the registers.", "Inspect the traceability chain it creates."],
+      nextTab: "traceability",
+      nextLabel: "Inspect chain",
+    },
+    iso27001: {
+      title: "Build an ISMS in layers",
+      why: "ISO 27001 implementation is a management system: scope, leadership, risk, controls, audit and improvement.",
+      steps: ["Generate the starter pack.", "Review the SoA.", "Export the executive report."],
+      nextTab: "soa",
+      nextLabel: "Open SoA",
+    },
+    risks: {
+      title: "Write risks as business statements",
+      why: "A useful risk names the threat, vulnerability, impact and asset or process.",
+      steps: ["Link the impacted asset.", "Score likelihood and impact.", "Pick treatment strategy and owner."],
+      nextTab: "controls",
+      nextLabel: "Map controls",
+    },
+    controls: {
+      title: "Controls must be testable",
+      why: "A control only helps assurance when an auditor can test its design and operation.",
+      steps: ["Link the risk.", "Map a framework.", "Set owner, frequency and evidence expectations."],
+      nextTab: "evidence",
+      nextLabel: "Collect evidence",
+    },
+    evidence: {
+      title: "Evidence proves the control",
+      why: "Evidence should be dated, scoped and tied to exactly one control when possible.",
+      steps: ["Link a control.", "Record collection date.", "Mark quality and review status."],
+      nextTab: "controlTests",
+      nextLabel: "Run testing",
+    },
+  };
+  return tips[tab] || defaults;
 }
 
 function buildAdvisor(data: GrcData) {
